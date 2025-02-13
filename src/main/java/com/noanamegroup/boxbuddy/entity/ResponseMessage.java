@@ -51,6 +51,11 @@ public class ResponseMessage<T>
         return new ResponseMessage<>(HttpStatus.OK.value(), "success", data);
     }
 
+    public static <T> ResponseMessage<T> success()
+    {
+        return new ResponseMessage<>(HttpStatus.OK.value(), "success", null);
+    }
+
     // 请求失败
     public static <T> ResponseMessage<T> error(T data)
     {

@@ -33,7 +33,7 @@ public class UserController
     }
 
     // 修改
-    @PutMapping("/update")
+    @PutMapping
     public ResponseMessage updateUser(@Validated @RequestBody UserDTO user)
     {
         User userNew = userServiceImpl.updateUser(user);
@@ -41,5 +41,10 @@ public class UserController
     }
 
     // 删除
-    //@DeleteMapping("/delete")
+    @DeleteMapping("/{userId}")
+    public ResponseMessage deleteUser(@PathVariable Integer userId)
+    {
+        userServiceImpl.deleteUser(userId);
+        return ResponseMessage.success();
+    }
 }

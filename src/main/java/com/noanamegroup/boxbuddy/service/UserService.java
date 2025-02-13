@@ -19,7 +19,6 @@ public class UserService implements UserServiceImpl
         User userEntity = new User();
         // Copy properties from user to userEntity
         BeanUtils.copyProperties(user, userEntity);
-
         return userDAO.save(userEntity);
     }
 
@@ -35,6 +34,15 @@ public class UserService implements UserServiceImpl
     @Override
     public User updateUser(UserDTO user)
     {
-        return null;
+        User userEntity = new User();
+        // Copy properties from user to userEntity
+        BeanUtils.copyProperties(user, userEntity);
+        return userDAO.save(userEntity);
+    }
+
+    @Override
+    public void deleteUser(Integer userId)
+    {
+        userDAO.deleteById(userId);
     }
 }

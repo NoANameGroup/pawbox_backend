@@ -30,4 +30,12 @@ public interface UserServiceImpl
      * @return
      */
     User updateUser(UserDTO user);
+
+    /**
+     * Delete a user
+     *
+     * @param userId
+     * @return
+     */
+    void deleteUser(Integer userId);
 }
