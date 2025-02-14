@@ -6,7 +6,7 @@ public class ResponseMessage<T>
 {
     private Integer code;
     private String message;
-    private T data;
+    private T data; //Object不是更香吗哈哈哈哈
 
     public ResponseMessage(Integer code, String message, T data)
     {
