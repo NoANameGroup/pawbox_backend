@@ -3,12 +3,14 @@ package com.noanamegroup.boxbuddy.entity.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.NumberFormat;
 
+//有时间可以去了解一些注解，主要是加快编码速度
 public class UserDTO
 {
-    private Integer userId;
+//    private Integer userId; // 用户怎么知道自己的id呢？
     @NotBlank(message = "用户名不能为空！") // 去除空格
     private String username;
     @NotEmpty(message = "密码不能为空！")

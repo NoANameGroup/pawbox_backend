@@ -13,7 +13,7 @@ public class GlobalExceptionHandlerAdvice
 {
 
     Logger log = LoggerFactory.getLogger(GlobalExceptionHandlerAdvice.class);
-
+    // 那就行，我平时不用，但是确实应该是可以的ok还有问题嘛出bug再说吧
     @ExceptionHandler({Exception.class})
     public ResponseMessage handleException(Exception e, HttpServletResponse response, HttpServletRequest request)
     {
