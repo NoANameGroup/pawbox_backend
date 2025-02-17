@@ -1,11 +1,13 @@
 package com.noanamegroup.boxbuddy.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.noanamegroup.boxbuddy.entity.User;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository // 用对的，刚才看错了
-public interface UserDAO extends CrudRepository<User, Integer>
+@Mapper
+public interface UserDAO extends BaseMapper<User>
 {
 
 }
+
+

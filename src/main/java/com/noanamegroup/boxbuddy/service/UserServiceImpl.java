@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 public interface UserServiceImpl
 {
     /**
-     * Add a user
+     * Sign up a user
      *
-     * @param user
+     * @param userDTO
      * @return
      */
-    User addUser(UserDTO user);
+    User signUp(UserDTO userDTO);
 
     /**
      * Get a user
@@ -26,10 +26,11 @@ public interface UserServiceImpl
     /**
      * Update a user
      *
-     * @param user
+     * @param userDTO
      * @return
      */
-    User updateUser(UserDTO user);
+
+    User updateUser(UserDTO userDTO);
 
     /**
      * Delete a user
@@ -37,5 +38,5 @@ public interface UserServiceImpl
      * @param userId
      * @return
      */
-    void deleteUser(Integer userId);
+    User deleteUser(Integer userId);
 }
