@@ -1,9 +1,9 @@
-package com.noanamegroup.boxbuddy.controller;
+package org.noanamegroup.pawbox.controller;
 
-import com.noanamegroup.boxbuddy.Result;
-import com.noanamegroup.boxbuddy.entity.User;
-import com.noanamegroup.boxbuddy.entity.dto.UserDTO;
-import com.noanamegroup.boxbuddy.service.UserServiceImpl;
+import org.noanamegroup.pawbox.Result;
+import org.noanamegroup.pawbox.entity.User;
+import org.noanamegroup.pawbox.entity.dto.UserDTO;
+import org.noanamegroup.pawbox.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

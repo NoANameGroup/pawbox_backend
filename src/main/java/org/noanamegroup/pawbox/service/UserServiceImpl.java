@@ -1,7 +1,7 @@
-package com.noanamegroup.boxbuddy.service;
+package org.noanamegroup.pawbox.service;
 
-import com.noanamegroup.boxbuddy.entity.User;
-import com.noanamegroup.boxbuddy.entity.dto.UserDTO;
+import org.noanamegroup.pawbox.entity.User;
+import org.noanamegroup.pawbox.entity.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,7 +1,7 @@
-package com.noanamegroup.boxbuddy.dao;
+package org.noanamegroup.pawbox.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.noanamegroup.boxbuddy.entity.User;
+import org.noanamegroup.pawbox.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

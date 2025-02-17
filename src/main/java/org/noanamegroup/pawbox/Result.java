@@ -1,7 +1,7 @@
-package com.noanamegroup.boxbuddy;
+package org.noanamegroup.pawbox;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.noanamegroup.boxbuddy.entity.User;
+import org.noanamegroup.pawbox.entity.User;
 
 import java.util.HashMap;
 import java.util.Map;

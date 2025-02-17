@@ -1,4 +1,4 @@
-package com.noanamegroup.boxbuddy.entity;
+package org.noanamegroup.pawbox.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

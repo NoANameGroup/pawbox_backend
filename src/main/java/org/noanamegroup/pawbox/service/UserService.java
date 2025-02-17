@@ -1,8 +1,8 @@
-package com.noanamegroup.boxbuddy.service;
+package org.noanamegroup.pawbox.service;
 
-import com.noanamegroup.boxbuddy.dao.UserDAO;
-import com.noanamegroup.boxbuddy.entity.User;
-import com.noanamegroup.boxbuddy.entity.dto.UserDTO;
+import org.noanamegroup.pawbox.dao.UserDAO;
+import org.noanamegroup.pawbox.entity.User;
+import org.noanamegroup.pawbox.entity.dto.UserDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

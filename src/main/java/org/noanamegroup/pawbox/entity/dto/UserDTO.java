@@ -1,4 +1,4 @@
-package com.noanamegroup.boxbuddy.entity.dto;
+package org.noanamegroup.pawbox.entity.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
