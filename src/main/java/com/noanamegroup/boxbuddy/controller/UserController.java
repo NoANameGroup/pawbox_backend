@@ -17,7 +17,7 @@ public class UserController
     UserServiceImpl userServiceImpl;
 
     // 增加
-    @PostMapping
+    @PostMapping("/signup")
     public String signUp(@Validated @RequestBody UserDTO user)
     {
         User userNew = userServiceImpl.signUp(user);
@@ -25,7 +25,7 @@ public class UserController
     }
 
     // 查询
-    @GetMapping("/{userId}")
+    @GetMapping("/get/{userId}")
     public String getUser(@PathVariable Integer userId)
     {
         User userNew = userServiceImpl.getUser(userId);
@@ -37,7 +37,7 @@ public class UserController
     }
 
     // 修改
-    @PutMapping
+    @PostMapping("/update")
     public String updateUser(@Validated @RequestBody UserDTO user)
     {
         User userNew = userServiceImpl.updateUser(user);
@@ -49,7 +49,7 @@ public class UserController
     }
 
     // 删除
-    @DeleteMapping("/{userId}")
+    @PostMapping("/delete/{userId}")
     public String deleteUser(@PathVariable Integer userId)
     {
         User userNew = userServiceImpl.deleteUser(userId);
