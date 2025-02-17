@@ -1,83 +1,42 @@
 package com.noanamegroup.boxbuddy.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Table(name="tb_user")
+@TableName(value = "user")
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(
+        name = "user",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        }
+)
 public class User
 {
     @Id
+    @TableId(value = "user_id", type = IdType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Integer userId;
-    @Column(name = "username")
+
+    @TableField(value = "username")
+    @Column(name = "username", nullable = false)
     private String username;
-    @Column(name = "password")
+
+    @TableField(value = "password")
+    @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "email")
+
+    @TableField(value = "email")
+    @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "phone_number")
-    private String phoneNumber;
-
-    public Integer getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(Integer userId)
-    {
-        this.userId = userId;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(String password)
-    {
-        this.password = password;
-    }
-
-    public String getUsername()
-    {
-        return username;
-    }
-
-    public void setUsername(String username)
-    {
-        this.username = username;
-    }
-
-    public String getEmail()
-    {
-        return email;
-    }
-
-    public void setEmail(String email)
-    {
-        this.email = email;
-    }
-
-    public String getPhoneNumber()
-    {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber)
-    {
-        this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                '}';
-    }
 }

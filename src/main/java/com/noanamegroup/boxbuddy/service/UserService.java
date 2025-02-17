@@ -14,35 +14,38 @@ public class UserService implements UserServiceImpl
     UserDAO userDAO;
 
     @Override
-    public User addUser(UserDTO user)
+    public User signUp(UserDTO userDTO)
     {
-        User userEntity = new User();
-        // Copy properties from user to userEntity
-        BeanUtils.copyProperties(user, userEntity);
-        return userDAO.save(userEntity);
+        User user = new User();
+        BeanUtils.copyProperties(userDTO, user);
+        userDAO.insert(user);
+        return user;
     }
 
     @Override
-    public User getUser(Integer userId)
-    {
-       return userDAO.findById(userId).orElseThrow(() ->
-        {
-            throw new IllegalArgumentException("用户不存在，参数异常！");
-        });
+    public User getUser(Integer userId) {
+        return userDAO.selectById(userId);
     }
 
     @Override
-    public User updateUser(UserDTO user)
-    {
-        User userEntity = new User();
-        // Copy properties from user to userEntity
-        BeanUtils.copyProperties(user, userEntity);
-        return userDAO.save(userEntity);
+    public User updateUser(UserDTO userDTO) {
+        User user = userDAO.selectById(userDTO.getUserId());
+        if (user == null) {
+            return null;
+        }
+        BeanUtils.copyProperties(userDTO, user);
+        userDAO.updateById(user);
+        return user;
     }
 
     @Override
-    public void deleteUser(Integer userId)
+    public User deleteUser(Integer userId)
     {
+        User user = userDAO.selectById(userId);
+        if (user == null) {
+            return null;
+        }
         userDAO.deleteById(userId);
+        return user;
     }
 }

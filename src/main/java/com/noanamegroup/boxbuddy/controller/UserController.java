@@ -1,6 +1,6 @@
 package com.noanamegroup.boxbuddy.controller;
 
-import com.noanamegroup.boxbuddy.entity.ResponseMessage;
+import com.noanamegroup.boxbuddy.Result;
 import com.noanamegroup.boxbuddy.entity.User;
 import com.noanamegroup.boxbuddy.entity.dto.UserDTO;
 import com.noanamegroup.boxbuddy.service.UserServiceImpl;
@@ -18,33 +18,45 @@ public class UserController
 
     // 增加
     @PostMapping
-    public ResponseMessage addUser(@Validated @RequestBody UserDTO user)
+    public String signUp(@Validated @RequestBody UserDTO user)
     {
-        User userNew = userServiceImpl.addUser(user);
-        return ResponseMessage.success(userNew);
+        User userNew = userServiceImpl.signUp(user);
+        return Result.getStringSuccess(userNew);
     }
 
     // 查询
     @GetMapping("/{userId}")
-    public ResponseMessage getUser(@PathVariable Integer userId)
+    public String getUser(@PathVariable Integer userId)
     {
         User userNew = userServiceImpl.getUser(userId);
-        return ResponseMessage.success(userNew);
+        if (userNew != null)
+        {
+            return Result.getStringSuccess(userNew);
+        }
+        return Result.getStringFail();
     }
 
     // 修改
     @PutMapping
-    public ResponseMessage updateUser(@Validated @RequestBody UserDTO user)
+    public String updateUser(@Validated @RequestBody UserDTO user)
     {
         User userNew = userServiceImpl.updateUser(user);
-        return ResponseMessage.success(userNew);
+        if (userNew == null)
+        {
+            return Result.getStringFail();
+        }
+        return Result.getStringSuccess(userNew);
     }
 
     // 删除
     @DeleteMapping("/{userId}")
-    public ResponseMessage deleteUser(@PathVariable Integer userId)
+    public String deleteUser(@PathVariable Integer userId)
     {
-        userServiceImpl.deleteUser(userId);
-        return ResponseMessage.success();
+        User userNew = userServiceImpl.deleteUser(userId);
+        if (userNew != null)
+        {
+            return Result.getStringSuccess(userNew);
+        }
+        return Result.getStringFail();
     }
 }
