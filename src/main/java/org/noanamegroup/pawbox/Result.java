@@ -8,12 +8,12 @@ import java.util.Map;
 
 public class Result
 {
-    public static String getStringSuccess(User user)
+    public static String getStringSuccess(Object data)
     {
         Map<String, Object> map = new HashMap<>();
         map.put("code", 200);
         map.put("message", "success");
-        map.put("data", user);
+        map.put("data", data);
         return JSONObject.toJSONString(map);
     }
 
