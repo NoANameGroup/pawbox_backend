@@ -16,34 +16,39 @@ public class BoxController {
     @Autowired
     BoxServiceImpl boxServiceImpl;
 
-    // 发送盒子
-    @PostMapping("/send/{senderId}")
-    public String sendBox(@Validated @ModelAttribute BoxDTO boxDTO, @PathVariable Integer senderId) {
-        Box box = boxServiceImpl.sendBox(boxDTO, senderId);
-        return Result.getStringSuccess(box);
-    }
-
-    // 查询单个盒子
+    // 获取盒子信息
     @GetMapping("/get/{boxId}")
-    public String getBox(@PathVariable Integer boxId) {
-        Box box = boxServiceImpl.getBoxById(boxId);
-        if (box != null) {
+    public String getBox(@PathVariable Integer boxId)
+    {
+        Box box = boxServiceImpl.getBox(boxId);
+        if (box != null)
+        {
             return Result.getStringSuccess(box);
         }
         return Result.getStringFail();
     }
 
-    // 获取用户收到的盒子
+    // 获取用户收到的所有盒子
     @GetMapping("/received/{userId}")
-    public String getReceivedBoxes(@PathVariable Integer userId) {
+    public String getReceivedBoxes(@PathVariable Integer userId)
+    {
         List<Box> boxes = boxServiceImpl.getReceivedBoxes(userId);
-        return Result.getStringSuccess(boxes);
+        if (boxes != null)
+        {
+            return Result.getStringSuccess(boxes);
+        }
+        return Result.getStringFail();
     }
 
-    // 获取用户发送的盒子
+    // 获取用户发送的所有盒子
     @GetMapping("/sent/{userId}")
-    public String getSentBoxes(@PathVariable Integer userId) {
+    public String getSentBoxes(@PathVariable Integer userId)
+    {
         List<Box> boxes = boxServiceImpl.getSentBoxes(userId);
-        return Result.getStringSuccess(boxes);
+        if (boxes != null)
+        {
+            return Result.getStringSuccess(boxes);
+        }
+        return Result.getStringFail();
     }
 }

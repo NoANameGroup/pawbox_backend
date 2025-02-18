@@ -2,28 +2,21 @@ package org.noanamegroup.pawbox.service;
 
 import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.dto.BoxDTO;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
 public interface BoxServiceImpl {
-    /**
-     * 发送盒子
-     *
-     * @param boxDTO 盒子信息
-     * @param senderId 发送者ID
-     * @return Box
-     */
-    Box sendBox(BoxDTO boxDTO, Integer senderId);
 
     /**
-     * 根据ID查询盒子
+     * 获取盒子
      *
      * @param boxId 盒子ID
      * @return Box
      */
-    Box getBoxById(Integer boxId);
+    Box getBox(Integer boxId);
 
     /**
      * 获取用户收到的所有盒子
@@ -48,4 +41,5 @@ public interface BoxServiceImpl {
      * @return 图片URL
      */
     String handleImageUpload(MultipartFile file);
+
 }

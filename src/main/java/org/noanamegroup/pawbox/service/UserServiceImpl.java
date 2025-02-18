@@ -1,6 +1,8 @@
 package org.noanamegroup.pawbox.service;
 
+import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.User;
+import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.entity.dto.UserDTO;
 import org.springframework.stereotype.Service;
 
@@ -8,12 +10,12 @@ import org.springframework.stereotype.Service;
 public interface UserServiceImpl
 {
     /**
-     * Sign up a user
+     * Register a user
      *
      * @param userDTO
      * @return
      */
-    User signUp(UserDTO userDTO);
+    User register(UserDTO userDTO);
 
     /**
      * Get a user
@@ -39,4 +41,30 @@ public interface UserServiceImpl
      * @return
      */
     User deleteUser(Integer userId);
+
+    /**
+     * User login
+     *
+     * @param user
+     * @return
+     */
+    User login(UserDTO user);
+
+    /**
+     * Send a box
+     *
+     * @param boxDTO
+     * @param senderId
+     * @return
+     */
+    Box sendBox(BoxDTO boxDTO, Integer senderId);
+
+    /**
+     * Receive a box
+     *
+     * @param boxId
+     * @param receiverId
+     * @return
+     */
+    Box receiveBox(Integer boxId, Integer receiverId);
 }

@@ -1,19 +1,15 @@
 package org.noanamegroup.pawbox.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,11 +37,13 @@ public class Box {
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
+    // 发送该盒子的用户（多对一关系）
+    @TableField(value = "sender")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender", nullable = false)
     private User sender;
 
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private User receiver;
+    // 接收该盒子的用户列表（多对多反向关系）
+    @ManyToMany(mappedBy = "receivedBoxes", fetch = FetchType.LAZY)
+    private List<User> receivers = new ArrayList<>();
 }
