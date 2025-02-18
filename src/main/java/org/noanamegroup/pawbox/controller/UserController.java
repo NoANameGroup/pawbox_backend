@@ -85,7 +85,7 @@ public class UserController
     }
 
     // 接受盒子
-    @PostMapping("/receive/user/{boxId}")
+    @PostMapping("/receive/{userId}/{boxId}")
     public String receiveBox(@PathVariable Integer boxId, @RequestParam Integer receiverId)
     {
         Box box = userServiceImpl.receiveBox(boxId, receiverId);
