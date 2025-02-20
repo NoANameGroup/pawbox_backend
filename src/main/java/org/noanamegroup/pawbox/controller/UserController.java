@@ -10,11 +10,14 @@ import org.noanamegroup.pawbox.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/user")
 public class UserController
 {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     UserServiceImpl userServiceImpl;
@@ -23,8 +26,14 @@ public class UserController
     @PostMapping("/register")
     public String register(@Validated @RequestBody UserDTO user)
     {
-        User userNew = userServiceImpl.register(user);
-        return Result.success(userNew);
+        try {
+            User userNew = userServiceImpl.register(user);
+            return Result.success(userNew);
+        } catch (Exception e) {
+            // 添加日志
+            log.error("Registration failed: ", e);
+            return Result.error(Result.ResultCode.INTERNAL_ERROR);
+        }
     }
 
     // 查询用户信息

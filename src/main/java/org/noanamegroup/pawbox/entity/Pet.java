@@ -18,6 +18,7 @@ import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @TableName(value = "pet")
 @Entity
@@ -47,7 +48,9 @@ public class Pet {
     private LocalDateTime adoptTime;
 
     // 宠物的主人（一对一关系）
+    @TableField(value = "owner_id")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "userId")
+    @JsonIgnore
     private User owner;
 } 

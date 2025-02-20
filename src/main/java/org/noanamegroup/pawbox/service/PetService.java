@@ -10,9 +10,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.noanamegroup.pawbox.entity.User;
 
 @Service
 public class PetService implements PetServiceImpl {
+    private static final Logger log = LoggerFactory.getLogger(PetService.class);
+
     @Autowired
     private PetDAO petDAO;
 
@@ -24,12 +29,26 @@ public class PetService implements PetServiceImpl {
 
     @Override
     public Pet adoptPet(PetDTO petDTO) {
-        Pet pet = new Pet();
-        BeanUtils.copyProperties(petDTO, pet);
-        pet.setAdoptTime(LocalDateTime.now());
-        pet.setOwner(userDAO.selectById(petDTO.getOwnerId()));
-        petDAO.insert(pet);
-        return pet;
+        try {
+            // 先检查用户是否存在
+            User owner = userDAO.selectById(petDTO.getOwnerId());
+            if (owner == null) {
+                log.error("User not found with id: {}", petDTO.getOwnerId());
+                throw new RuntimeException("User not found");
+            }
+
+            Pet pet = new Pet();
+            BeanUtils.copyProperties(petDTO, pet);
+            pet.setAdoptTime(LocalDateTime.now());
+            pet.setOwner(owner);
+            
+            log.debug("Saving pet with owner: {}", owner);
+            petDAO.insert(pet);
+            return pet;
+        } catch (Exception e) {
+            log.error("Error adopting pet: ", e);
+            throw new RuntimeException("Failed to adopt pet", e);
+        }
     }
 
     @Override

@@ -25,6 +25,7 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @TableName(value = "user")
 @Entity
@@ -41,8 +42,9 @@ import lombok.NoArgsConstructor;
 public class User
 {
     @Id
-    @TableId(value = "user_id", type = IdType.AUTO)
+    @TableId(value = "userId", type = IdType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userId")
     private Integer userId;
 
     @TableField(value = "username")
@@ -58,20 +60,26 @@ public class User
     private String email;
 
     // 用户创建的盒子（一对多）
+    @TableField(exist = false)
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Box> sentBoxes = new ArrayList<>();
 
     // 用户接收到的盒子（多对多）
+    @TableField(exist = false)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_received_boxes",
-            joinColumns = @JoinColumn(name = "user_id"),
+            joinColumns = @JoinColumn(name = "userId"),
             inverseJoinColumns = @JoinColumn(name = "box_id")
     )
+    @JsonIgnore
     private List<Box> receivedBoxes = new ArrayList<>();
 
     // 用户的宠物（一对一）
+    @TableField(exist = false)
     @OneToOne(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private Pet pet;
 
 }

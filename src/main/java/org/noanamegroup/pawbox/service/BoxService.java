@@ -30,7 +30,7 @@ public class BoxService implements BoxServiceImpl {
     @Override
     public List<Box> getReceivedBoxes(Integer userId) {
         QueryWrapper<Box> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("receiver_id", userId);
+        queryWrapper.eq("userId", userId);
         return boxDAO.selectList(queryWrapper);
     }
 

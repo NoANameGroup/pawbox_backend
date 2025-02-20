@@ -21,6 +21,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.JoinTable;
 
 @TableName(value = "box")
 @Entity
@@ -46,11 +48,15 @@ public class Box {
     private LocalDateTime createTime;
 
     // 发送该盒子的用户（多对一关系）
+    @TableField(value = "sender_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", referencedColumnName = "userId")
+    @JsonIgnore
     private User sender;
 
     // 接收该盒子的用户（多对多关系）
+    @TableField(exist = false)
     @ManyToMany(mappedBy = "receivedBoxes", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<User> receivers = new ArrayList<>();
 }
