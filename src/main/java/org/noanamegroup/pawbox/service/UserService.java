@@ -1,5 +1,8 @@
 package org.noanamegroup.pawbox.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.noanamegroup.pawbox.dao.BoxDAO;
 import org.noanamegroup.pawbox.dao.UserDAO;
 import org.noanamegroup.pawbox.entity.Box;
@@ -8,23 +11,28 @@ import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.entity.dto.UserDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class UserService implements UserServiceImpl
 {
     @Autowired
     UserDAO userDAO;
+    
+    @Autowired
     BoxDAO boxDAO;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User register(UserDTO userDTO)
     {
         User user = new User();
         BeanUtils.copyProperties(userDTO, user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.insert(user);
         return user;
     }
@@ -62,7 +70,7 @@ public class UserService implements UserServiceImpl
         if (user == null) {
             return null;
         }
-        if (user.getPassword().equals(userDTO.getPassword())) {
+        if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) {
             return user;
         }
         return null;
@@ -93,6 +101,7 @@ public class UserService implements UserServiceImpl
         List<User> receivers = box.getReceivers();
         receivers.add(receiver);
         box.setReceivers(receivers);
+        boxDAO.updateById(box);
         return box;
     }
 }

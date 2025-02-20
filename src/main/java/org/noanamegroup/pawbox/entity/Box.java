@@ -9,7 +9,15 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,12 +46,11 @@ public class Box {
     private LocalDateTime createTime;
 
     // 发送该盒子的用户（多对一关系）
-    @TableField(value = "sender")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender", nullable = false)
+    @JoinColumn(name = "sender_id")
     private User sender;
 
-    // 接收该盒子的用户列表（多对多反向关系）
+    // 接收该盒子的用户（多对多关系）
     @ManyToMany(mappedBy = "receivedBoxes", fetch = FetchType.LAZY)
     private List<User> receivers = new ArrayList<>();
 }

@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.noanamegroup.pawbox.entity.User;
 
 @Data
 @NoArgsConstructor
@@ -12,8 +11,8 @@ import org.noanamegroup.pawbox.entity.User;
 public class BoxDTO {
     private Integer boxId;
 
-    @NotNull(message = "接收者不能为空")
-    private Integer sender_id;
+    @NotNull(message = "发送者不能为空")
+    private Integer senderId;
 
     @NotNull(message = "内容不能为空")
     private String content;

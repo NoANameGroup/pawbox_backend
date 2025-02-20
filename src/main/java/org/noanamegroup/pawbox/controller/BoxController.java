@@ -1,14 +1,18 @@
 package org.noanamegroup.pawbox.controller;
 
+import java.util.List;
+
 import org.noanamegroup.pawbox.Result;
 import org.noanamegroup.pawbox.entity.Box;
-import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.service.BoxServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/box")
@@ -50,5 +54,12 @@ public class BoxController {
             return Result.getStringSuccess(boxes);
         }
         return Result.getStringFail();
+    }
+
+    // 处理图片上传
+    @PostMapping("/upload")
+    public String handleImageUpload(@RequestParam("file") MultipartFile file) {
+        String imageUrl = boxServiceImpl.handleImageUpload(file);
+        return Result.getStringSuccess(imageUrl);
     }
 }
