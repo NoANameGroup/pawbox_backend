@@ -14,7 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -46,8 +46,8 @@ public class Pet {
     @Column(name = "adopt_time", nullable = false)
     private LocalDateTime adoptTime;
 
-    // 宠物的主人（多对一关系）
-    @ManyToOne(fetch = FetchType.LAZY)
+    // 宠物的主人（一对一关系）
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id")
     private User owner;
 } 
