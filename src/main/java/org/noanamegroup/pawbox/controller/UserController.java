@@ -24,7 +24,7 @@ public class UserController
     public String register(@Validated @RequestBody UserDTO user)
     {
         User userNew = userServiceImpl.register(user);
-        return Result.getStringSuccess(userNew);
+        return Result.success(userNew);
     }
 
     // 查询用户信息
@@ -34,9 +34,9 @@ public class UserController
         User userNew = userServiceImpl.getUser(userId);
         if (userNew != null)
         {
-            return Result.getStringSuccess(userNew);
+            return Result.success(userNew);
         }
-        return Result.getStringFail();
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
     // 修改用户信息
@@ -46,9 +46,9 @@ public class UserController
         User userNew = userServiceImpl.updateUser(user);
         if (userNew == null)
         {
-            return Result.getStringFail();
+            return Result.error(Result.ResultCode.NOT_FOUND);
         }
-        return Result.getStringSuccess(userNew);
+        return Result.success(userNew);
     }
 
     // 删除用户
@@ -58,9 +58,9 @@ public class UserController
         User userNew = userServiceImpl.deleteUser(userId);
         if (userNew != null)
         {
-            return Result.getStringSuccess(userNew);
+            return Result.success(userNew);
         }
-        return Result.getStringFail();
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
     // 登录
@@ -81,7 +81,7 @@ public class UserController
     public String sendBox(@Validated @RequestBody BoxDTO boxDTO, @RequestParam Integer senderId)
     {
         Box box = userServiceImpl.sendBox(boxDTO, senderId);
-        return Result.getStringSuccess(box);
+        return Result.success(box);
     }
 
     // 接受盒子
@@ -91,8 +91,8 @@ public class UserController
         Box box = userServiceImpl.receiveBox(boxId, receiverId);
         if (box != null)
         {
-            return Result.getStringSuccess(box);
+            return Result.success(box);
         }
-        return Result.getStringFail();
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 }

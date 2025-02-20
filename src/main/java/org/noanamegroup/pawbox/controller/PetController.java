@@ -25,7 +25,7 @@ public class PetController {
     @PostMapping("/adopt")
     public String adoptPet(@Validated @RequestBody PetDTO petDTO) {
         Pet pet = petServiceImpl.adoptPet(petDTO);
-        return Result.getStringSuccess(pet);
+        return Result.success(pet);
     }
 
     // 更新宠物信息
@@ -33,16 +33,16 @@ public class PetController {
     public String updatePet(@Validated @RequestBody PetDTO petDTO) {
         Pet pet = petServiceImpl.updatePet(petDTO);
         if (pet == null) {
-            return Result.getStringFail();
+            return Result.error(Result.ResultCode.NOT_FOUND);
         }
-        return Result.getStringSuccess(pet);
+        return Result.success(pet);
     }
 
     // 更新宠物头像
     @PostMapping("/avatar")
     public String updateAvatar(@RequestParam("file") MultipartFile file) {
         String avatarUrl = petServiceImpl.updateAvatar(file);
-        return Result.getStringSuccess(avatarUrl);
+        return Result.success(avatarUrl);
     }
 
     // 获取宠物信息
@@ -50,8 +50,8 @@ public class PetController {
     public String getPet(@PathVariable Integer petId) {
         Pet pet = petServiceImpl.getPet(petId);
         if (pet != null) {
-            return Result.getStringSuccess(pet);
+            return Result.success(pet);
         }
-        return Result.getStringFail();
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 } 

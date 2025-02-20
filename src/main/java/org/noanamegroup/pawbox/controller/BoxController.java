@@ -27,9 +27,9 @@ public class BoxController {
         Box box = boxServiceImpl.getBox(boxId);
         if (box != null)
         {
-            return Result.getStringSuccess(box);
+            return Result.success(box);
         }
-        return Result.getStringFail();
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
     // 获取用户收到的所有盒子
@@ -39,9 +39,9 @@ public class BoxController {
         List<Box> boxes = boxServiceImpl.getReceivedBoxes(userId);
         if (boxes != null)
         {
-            return Result.getStringSuccess(boxes);
+            return Result.success(boxes);
         }
-        return Result.getStringFail();
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
     // 获取用户发送的所有盒子
@@ -51,15 +51,15 @@ public class BoxController {
         List<Box> boxes = boxServiceImpl.getSentBoxes(userId);
         if (boxes != null)
         {
-            return Result.getStringSuccess(boxes);
+            return Result.success(boxes);
         }
-        return Result.getStringFail();
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
     // 处理图片上传
     @PostMapping("/upload")
     public String handleImageUpload(@RequestParam("file") MultipartFile file) {
         String imageUrl = boxServiceImpl.handleImageUpload(file);
-        return Result.getStringSuccess(imageUrl);
+        return Result.success(imageUrl);
     }
 }

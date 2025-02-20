@@ -9,9 +9,9 @@ import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.User;
 import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.entity.dto.UserDTO;
+import org.noanamegroup.pawbox.exception.UserNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,11 @@ public class UserService implements UserServiceImpl
 
     @Override
     public User getUser(Integer userId) {
-        return userDAO.selectById(userId);
+        User user = userDAO.selectById(userId);
+        if (user == null) {
+            throw new UserNotFoundException("用户不存在: " + userId);
+        }
+        return user;
     }
 
     @Override
