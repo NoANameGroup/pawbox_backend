@@ -8,11 +8,16 @@ import org.noanamegroup.pawbox.entity.dto.UserDTO;
 import org.noanamegroup.pawbox.service.BoxServiceImpl;
 import org.noanamegroup.pawbox.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.servlet.http.HttpSession;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +40,14 @@ public class UserController
         if (user != null) {
             // 登录成功,将用户信息存入session
             session.setAttribute("user", user);
-            session.setMaxInactiveInterval(30 * 60); // session过期时间设为30分钟
+            // 设置认证信息
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                user.getEmail(), 
+                null, 
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            
             return Result.loginSuccess(user);
         }
         return Result.loginFail();

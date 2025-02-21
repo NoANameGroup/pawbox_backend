@@ -28,8 +28,17 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .maximumSessions(1)  // 同一用户最多一个session
-                .expiredUrl("/user/login")  // session过期后跳转到登录页
+            )
+            .formLogin(form -> form
+                .loginProcessingUrl("/user/login")
+                .successHandler((request, response, authentication) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    response.getWriter().write("{\"code\":200,\"message\":\"登录成功\"}");
+                })
+                .failureHandler((request, response, exception) -> {
+                    response.setContentType("application/json;charset=utf-8");
+                    response.getWriter().write("{\"code\":401,\"message\":\"登录失败\"}");
+                })
             );
             
         return http.build();
