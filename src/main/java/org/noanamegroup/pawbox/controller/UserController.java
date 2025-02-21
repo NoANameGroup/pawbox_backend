@@ -12,6 +12,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -22,42 +25,64 @@ public class UserController
     @Autowired
     UserServiceImpl userServiceImpl;
 
-    // 注册用户
+    // 登录
+    @PostMapping("/login")
+    public String login(@RequestBody Map<String, String> loginInfo, HttpSession session) {
+        String email = loginInfo.get("email");
+        String password = loginInfo.get("password");
+        
+        User user = userServiceImpl.login(email, password);
+        if (user != null) {
+            // 登录成功,将用户信息存入session
+            session.setAttribute("user", user);
+            session.setMaxInactiveInterval(30 * 60); // session过期时间设为30分钟
+            return Result.loginSuccess(user);
+        }
+        return Result.loginFail();
+    }
+
+    // 注册
     @PostMapping("/register")
-    public String register(@Validated @RequestBody UserDTO user)
-    {
+    public String register(@RequestBody UserDTO userDTO) {
         try {
-            User userNew = userServiceImpl.register(user);
-            return Result.success(userNew);
+            User user = userServiceImpl.register(userDTO);
+            return Result.success(user);
         } catch (Exception e) {
-            // 添加日志
             log.error("Registration failed: ", e);
             return Result.error(Result.ResultCode.INTERNAL_ERROR);
         }
     }
 
-    // 查询用户信息
+    // 获取用户信息
     @GetMapping("/get/{userId}")
-    public String getUser(@PathVariable Integer userId)
-    {
-        User userNew = userServiceImpl.getUser(userId);
-        if (userNew != null)
-        {
-            return Result.success(userNew);
+    public String getUser(@PathVariable Integer userId) {
+        User user = userServiceImpl.getUser(userId);
+        if (user != null) {
+            // 创建简化的返回对象
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put("userId", user.getUserId());
+            userInfo.put("username", user.getUsername());
+            userInfo.put("email", user.getEmail());
+            return Result.success(userInfo);
         }
         return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
-    // 修改用户信息
+    // 登出
+    @PostMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return Result.success("Logout successful");
+    }
+
+    // 更新用户信息
     @PostMapping("/update")
-    public String updateUser(@Validated @RequestBody UserDTO user)
-    {
-        User userNew = userServiceImpl.updateUser(user);
-        if (userNew == null)
-        {
-            return Result.error(Result.ResultCode.NOT_FOUND);
+    public String updateUser(@RequestBody UserDTO userDTO) {
+        User user = userServiceImpl.updateUser(userDTO);
+        if (user != null) {
+            return Result.success(user);
         }
-        return Result.success(userNew);
+        return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
     // 删除用户
@@ -72,17 +97,14 @@ public class UserController
         return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
-    // 登录
-    @PostMapping("/login")
-    public String login(@Validated @RequestBody UserDTO user)
-    {
-
-        User userNew = userServiceImpl.login(user);
-        if (userNew != null)
-        {
-            return Result.loginSucess(userNew);
+    // 获取当前登录用户
+    @GetMapping("/current")
+    public String getCurrentUser(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            return Result.success(user);
         }
-        return Result.loginFail();
+        return Result.error(Result.ResultCode.UNAUTHORIZED);
     }
 
     // 发送盒子
