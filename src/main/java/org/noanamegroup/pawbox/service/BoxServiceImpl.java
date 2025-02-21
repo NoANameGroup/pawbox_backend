@@ -1,11 +1,11 @@
 package org.noanamegroup.pawbox.service;
 
+import java.util.List;
+
 import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 public interface BoxServiceImpl {
@@ -41,5 +41,8 @@ public interface BoxServiceImpl {
      * @return 图片URL
      */
     String handleImageUpload(MultipartFile file);
+
+    Box getRandomBox(Integer receiverId);
+    Box sendBox(BoxDTO boxDTO);
 
 }

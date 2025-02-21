@@ -45,10 +45,11 @@ public interface UserServiceImpl
     /**
      * User login
      *
-     * @param user
+     * @param email
+     * @param password
      * @return
      */
-    User login(UserDTO user);
+    User login(String email, String password);
 
     /**
      * Send a box

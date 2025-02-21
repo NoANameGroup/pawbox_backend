@@ -21,6 +21,9 @@ public class BoxService implements BoxServiceImpl {
     @Autowired
     private BoxDAO boxDAO;
 
+    @Autowired
+    private UserDAO userDAO;
+
     @Override
     public Box getBox(Integer boxId)
     {
@@ -65,5 +68,28 @@ public class BoxService implements BoxServiceImpl {
         } catch (Exception e) {
             throw new RuntimeException("图片上传失败", e);
         }
+    }
+
+    @Override
+    public Box getRandomBox(Integer receiverId) {
+        // 使用 MySQL 的 RAND() 函数实现随机获取
+        QueryWrapper<Box> queryWrapper = new QueryWrapper<>();
+        queryWrapper.last("ORDER BY RAND() LIMIT 1");
+        return boxDAO.selectOne(queryWrapper);
+    }
+
+    @Override
+    public Box sendBox(BoxDTO boxDTO) {
+        Box box = new Box();
+        box.setContent(boxDTO.getContent());
+        box.setImageUrl(boxDTO.getImageUrl());
+        box.setCreateTime(LocalDateTime.now());
+        
+        // 设置发送者
+        User sender = userDAO.selectById(boxDTO.getSenderId());
+        box.setSender(sender);
+        
+        boxDAO.insert(box);
+        return box;
     }
 }

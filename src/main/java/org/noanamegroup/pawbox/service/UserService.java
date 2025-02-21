@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @Service
 public class UserService implements UserServiceImpl
@@ -69,12 +70,12 @@ public class UserService implements UserServiceImpl
     }
 
     @Override
-    public User login(UserDTO userDTO) {
-        User user = userDAO.selectById(userDTO.getUserId());
-        if (user == null) {
-            return null;
-        }
-        if (passwordEncoder.matches(userDTO.getPassword(), user.getPassword())) {
+    public User login(String email, String password) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email);
+        User user = userDAO.selectOne(queryWrapper);
+        
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return user;
         }
         return null;

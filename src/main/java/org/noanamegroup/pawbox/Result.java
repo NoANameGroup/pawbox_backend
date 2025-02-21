@@ -46,7 +46,7 @@ public class Result
         return JSONObject.toJSONString(map);
     }
 
-    public static String loginSucess(User user)
+    public static String loginSuccess(User user)
     {
         Map<String, Object> map = new HashMap<>();
         map.put("code", 200);

@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import org.noanamegroup.pawbox.Result;
 import org.noanamegroup.pawbox.entity.Box;
+import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.service.BoxServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
