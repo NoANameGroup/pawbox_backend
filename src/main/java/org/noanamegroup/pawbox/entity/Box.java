@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +22,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.JoinTable;
 
 @TableName(value = "box")
 @Entity
@@ -31,8 +30,9 @@ import jakarta.persistence.JoinTable;
 @NoArgsConstructor
 public class Box {
     @Id
-    @TableId(value = "box_id", type = IdType.AUTO)
+    @TableId(value = "boxId", type = IdType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "boxId")
     private Integer boxId;
 
     @TableField(value = "content")
@@ -47,10 +47,14 @@ public class Box {
     @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;
 
-    // 发送该盒子的用户（多对一关系）
+    // 修改 sender 相关的字段
     @TableField(value = "sender_id")
+    @Column(name = "sender_id", nullable = false)
+    private Integer senderId;
+
+    @TableField(exist = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", referencedColumnName = "userId")
+    @JoinColumn(name = "sender_id", insertable = false, updatable = false)
     @JsonIgnore
     private User sender;
 

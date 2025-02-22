@@ -1,8 +1,8 @@
 package org.noanamegroup.pawbox.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.noanamegroup.pawbox.Result;
 import org.noanamegroup.pawbox.entity.Box;
@@ -34,7 +34,7 @@ public class BoxController {
             boxInfo.put("boxId", box.getBoxId());
             boxInfo.put("content", box.getContent());
             boxInfo.put("imageUrl", box.getImageUrl());
-            boxInfo.put("senderId", box.getSender().getUserId());
+            boxInfo.put("senderId", box.getSenderId()); 
             return Result.success(boxInfo);
         }
         return Result.error(Result.ResultCode.NOT_FOUND);

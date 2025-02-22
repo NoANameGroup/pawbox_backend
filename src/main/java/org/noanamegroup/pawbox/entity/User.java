@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,7 +26,6 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @TableName(value = "user")
 @Entity
@@ -71,7 +71,7 @@ public class User
     @JoinTable(
             name = "user_received_boxes",
             joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "box_id")
+            inverseJoinColumns = @JoinColumn(name = "boxId")
     )
     @JsonIgnore
     private List<Box> receivedBoxes = new ArrayList<>();

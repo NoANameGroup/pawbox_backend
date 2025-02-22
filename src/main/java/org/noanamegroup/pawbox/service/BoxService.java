@@ -5,16 +5,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.noanamegroup.pawbox.dao.BoxDAO;
+import org.noanamegroup.pawbox.dao.UserDAO;
+import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.User;
+import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.noanamegroup.pawbox.dao.BoxDAO;
-import org.noanamegroup.pawbox.dao.UserDAO;
-import org.noanamegroup.pawbox.entity.Box;
-import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 
 @Service
 public class BoxService implements BoxServiceImpl {
@@ -32,9 +32,8 @@ public class BoxService implements BoxServiceImpl {
 
     @Override
     public List<Box> getReceivedBoxes(Integer userId) {
-        QueryWrapper<Box> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userId", userId);
-        return boxDAO.selectList(queryWrapper);
+        // 使用 JOIN 查询通过中间表获取用户收到的盒子
+        return boxDAO.getReceivedBoxesByUserId(userId);
     }
 
     @Override
@@ -85,11 +84,15 @@ public class BoxService implements BoxServiceImpl {
         box.setImageUrl(boxDTO.getImageUrl());
         box.setCreateTime(LocalDateTime.now());
         
-        // 设置发送者
+        // 设置发送者ID而不是整个发送者对象
+        box.setSenderId(boxDTO.getSenderId());
+        
+        boxDAO.insert(box);
+        
+        // 如果需要返回完整的发送者信息，可以在插入后重新查询
         User sender = userDAO.selectById(boxDTO.getSenderId());
         box.setSender(sender);
         
-        boxDAO.insert(box);
         return box;
     }
 }
