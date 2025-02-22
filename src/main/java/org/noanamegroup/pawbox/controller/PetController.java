@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.noanamegroup.pawbox.Result;
 import org.noanamegroup.pawbox.entity.Pet;
+import org.noanamegroup.pawbox.entity.User;
 import org.noanamegroup.pawbox.entity.dto.PetDTO;
 import org.noanamegroup.pawbox.service.PetServiceImpl;
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/pet")
@@ -45,8 +48,17 @@ public class PetController {
 
     // 领养宠物
     @PostMapping("/adopt")
-    public String adoptPet(@RequestBody PetDTO petDTO) {
+    public String adoptPet(@RequestBody PetDTO petDTO, HttpSession session) {
         try {
+            // 从session获取当前用户
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                return Result.error(Result.ResultCode.UNAUTHORIZED);
+            }
+            
+            // 设置宠物主人ID为当前登录用户
+            petDTO.setOwnerId(user.getUserId());
+            
             // 自动生成生日
             petDTO.setBirthday(LocalDateTime.now());
             Pet pet = petServiceImpl.adoptPet(petDTO);

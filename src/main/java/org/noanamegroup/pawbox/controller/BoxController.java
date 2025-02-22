@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.noanamegroup.pawbox.Result;
 import org.noanamegroup.pawbox.entity.Box;
+import org.noanamegroup.pawbox.entity.User;
 import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.service.BoxServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/box")
@@ -42,8 +45,16 @@ public class BoxController {
 
     // 发送盒子
     @PostMapping("/send")
-    public String sendBox(@RequestBody BoxDTO boxDTO) {
-        // BoxDTO 中已包含 content, imageUrl, senderId
+    public String sendBox(@RequestBody BoxDTO boxDTO, HttpSession session) {
+        // 从session获取当前用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return Result.error(Result.ResultCode.UNAUTHORIZED);
+        }
+        
+        // 设置发送者ID为当前登录用户
+        boxDTO.setSenderId(user.getUserId());
+        
         Box box = boxServiceImpl.sendBox(boxDTO);
         if (box != null) {
             return Result.success(box);

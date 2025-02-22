@@ -129,9 +129,17 @@ public class UserController
 
     // 发送盒子
     @PostMapping("/send")
-    public String sendBox(@Validated @RequestBody BoxDTO boxDTO, @RequestParam Integer senderId)
-    {
-        Box box = userServiceImpl.sendBox(boxDTO, senderId);
+    public String sendBox(@Validated @RequestBody BoxDTO boxDTO, HttpSession session) {
+        // 从session获取当前用户
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return Result.error(Result.ResultCode.UNAUTHORIZED);
+        }
+        
+        // 设置发送者ID为当前登录用户
+        boxDTO.setSenderId(user.getUserId());
+        
+        Box box = userServiceImpl.sendBox(boxDTO, user.getUserId());
         return Result.success(box);
     }
 
