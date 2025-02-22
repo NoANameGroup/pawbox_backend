@@ -71,28 +71,48 @@ public class BoxService implements BoxServiceImpl {
 
     @Override
     public Box getRandomBox(Integer receiverId) {
-        // 使用 MySQL 的 RAND() 函数实现随机获取
-        QueryWrapper<Box> queryWrapper = new QueryWrapper<>();
-        queryWrapper.last("ORDER BY RAND() LIMIT 1");
-        return boxDAO.selectOne(queryWrapper);
+        try {
+            // 获取一个随机的未被接收的盒子
+            QueryWrapper<Box> queryWrapper = new QueryWrapper<>();
+            queryWrapper.notExists("SELECT 1 FROM user_received_boxes urb WHERE urb.box_id = box.boxId");
+            queryWrapper.last("ORDER BY RAND() LIMIT 1");
+            Box box = boxDAO.selectOne(queryWrapper);
+            
+            if (box != null) {
+                // 获取接收者
+                User receiver = userDAO.selectById(receiverId);
+                if (receiver == null) {
+                    throw new RuntimeException("接收者不存在");
+                }
+                
+                try {
+                    // 直接插入中间表记录
+                    boxDAO.insertUserReceivedBox(receiverId, box.getBoxId());
+                } catch (Exception e) {
+                    throw new RuntimeException("保存接收记录失败", e);
+                }
+            }
+            return box;
+        } catch (Exception e) {
+            throw new RuntimeException("获取随机盒子失败", e);
+        }
     }
 
     @Override
     public Box sendBox(BoxDTO boxDTO) {
-        Box box = new Box();
-        box.setContent(boxDTO.getContent());
-        box.setImageUrl(boxDTO.getImageUrl());
-        box.setCreateTime(LocalDateTime.now());
-        
-        // 设置发送者ID而不是整个发送者对象
-        box.setSenderId(boxDTO.getSenderId());
-        
-        boxDAO.insert(box);
-        
-        // 如果需要返回完整的发送者信息，可以在插入后重新查询
-        User sender = userDAO.selectById(boxDTO.getSenderId());
-        box.setSender(sender);
-        
-        return box;
+        try {
+            // 创建盒子
+            Box box = new Box();
+            box.setContent(boxDTO.getContent());
+            box.setImageUrl(boxDTO.getImageUrl());
+            box.setCreateTime(LocalDateTime.now());
+            box.setSenderId(boxDTO.getSenderId());
+            
+            // 保存盒子
+            boxDAO.insert(box);
+            return box;
+        } catch (Exception e) {
+            throw new RuntimeException("发送盒子失败", e);
+        }
     }
 }

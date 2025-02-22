@@ -17,7 +17,8 @@ public class Result
         NOT_FOUND(404, "资源未找到"),
         UNAUTHORIZED(401, "未授权"),
         FORBIDDEN(403, "禁止访问"),
-        INTERNAL_ERROR(500, "服务器内部错误");
+        INTERNAL_ERROR(500, "服务器内部错误"),
+        BAD_REQUEST(444, "坏的请求");
         
         private final int code;
         private final String message;

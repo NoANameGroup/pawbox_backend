@@ -70,8 +70,8 @@ public class User
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_received_boxes",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "boxId")
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "box_id")
     )
     @JsonIgnore
     private List<Box> receivedBoxes = new ArrayList<>();
