@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,11 +15,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @TableName(value = "pet")
 @Entity
@@ -27,8 +27,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @NoArgsConstructor
 public class Pet {
     @Id
-    @TableId(value = "pet_id", type = IdType.AUTO)
+    @TableId(value = "petId", type = IdType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "petId")
     private Integer petId;
 
     @TableField(value = "name")
@@ -47,10 +48,13 @@ public class Pet {
     @Column(name = "adopt_time", nullable = false)
     private LocalDateTime adoptTime;
 
-    // 宠物的主人（一对一关系）
     @TableField(value = "owner_id")
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", referencedColumnName = "userId")
+    @Column(name = "owner_id", nullable = false)
+    private Integer ownerId;
+
+    @TableField(exist = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", insertable = false, updatable = false)
     @JsonIgnore
     private User owner;
 } 

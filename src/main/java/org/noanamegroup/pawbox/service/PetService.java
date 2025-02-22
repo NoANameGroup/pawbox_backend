@@ -30,23 +30,41 @@ public class PetService implements PetServiceImpl {
     @Override
     public Pet adoptPet(PetDTO petDTO) {
         try {
-            // 先检查用户是否存在
+            // 1. 参数校验
+            if (petDTO.getOwnerId() == null) {
+                throw new IllegalArgumentException("Owner ID cannot be null");
+            }
+
+            // 2. 查询用户
             User owner = userDAO.selectById(petDTO.getOwnerId());
             if (owner == null) {
                 log.error("User not found with id: {}", petDTO.getOwnerId());
                 throw new RuntimeException("User not found");
             }
 
+            // 3. 构建Pet对象并设置必要字段
             Pet pet = new Pet();
             BeanUtils.copyProperties(petDTO, pet);
             pet.setAdoptTime(LocalDateTime.now());
             pet.setOwner(owner);
             
-            log.debug("Saving pet with owner: {}", owner);
+            // 4. 设置外键字段（确保与数据库映射一致）
+            // 由于使用了JPA的@JoinColumn，这里不需要手动设置owner_id
+            
+            // 5. 添加详细日志
+            log.debug("Creating pet: name={}, ownerId={}, adoptTime={}", 
+                     pet.getName(), owner.getUserId(), pet.getAdoptTime());
+            
+            // 6. 执行插入
             petDAO.insert(pet);
+            
+            // 7. 记录成功日志
+            log.info("Successfully adopted pet: id={}, name={}, owner={}", 
+                    pet.getPetId(), pet.getName(), owner.getUsername());
+                
             return pet;
         } catch (Exception e) {
-            log.error("Error adopting pet: ", e);
+            log.error("Error adopting pet: {}", e.getMessage(), e);
             throw new RuntimeException("Failed to adopt pet", e);
         }
     }
