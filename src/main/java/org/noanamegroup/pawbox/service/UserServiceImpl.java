@@ -68,4 +68,12 @@ public interface UserServiceImpl
      * @return
      */
     Box receiveBox(Integer boxId, Integer receiverId);
+
+    /**
+     * Find a user by email
+     *
+     * @param email
+     * @return
+     */
+    User findByEmail(String email);
 }

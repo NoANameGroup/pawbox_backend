@@ -1,25 +1,32 @@
 package org.noanamegroup.pawbox.controller;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.noanamegroup.pawbox.Result;
 import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.User;
 import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.entity.dto.UserDTO;
-import org.noanamegroup.pawbox.service.BoxServiceImpl;
 import org.noanamegroup.pawbox.service.UserServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import jakarta.servlet.http.HttpSession;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -47,6 +54,7 @@ public class UserController
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
             
             return Result.loginSuccess(user);
         }

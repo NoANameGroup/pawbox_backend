@@ -14,19 +14,22 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @Service
 public class UserService implements UserServiceImpl
 {
-    @Autowired
-    UserDAO userDAO;
+    private final UserDAO userDAO;
+    private final BoxDAO boxDAO;
+    private final PasswordEncoder passwordEncoder;
     
     @Autowired
-    BoxDAO boxDAO;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public UserService(UserDAO userDAO, BoxDAO boxDAO, PasswordEncoder passwordEncoder) {
+        this.userDAO = userDAO;
+        this.boxDAO = boxDAO;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public User register(UserDTO userDTO)
@@ -108,5 +111,12 @@ public class UserService implements UserServiceImpl
         box.setReceivers(receivers);
         boxDAO.updateById(box);
         return box;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("email", email);
+        return userDAO.selectOne(queryWrapper);
     }
 }
