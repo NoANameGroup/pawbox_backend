@@ -27,6 +27,9 @@ public class BoxController {
     @Autowired
     BoxServiceImpl boxServiceImpl;
 
+    @Autowired
+    HttpSession session;
+
     // 获取随机盒子
     @GetMapping("/random")
     public String getRandomBox(@RequestParam Integer receiverId) {
@@ -45,21 +48,26 @@ public class BoxController {
 
     // 发送盒子
     @PostMapping("/send")
-    public String sendBox(@RequestBody BoxDTO boxDTO, HttpSession session) {
-        // 从session获取当前用户
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return Result.error(Result.ResultCode.UNAUTHORIZED);
+    public String sendBox(@RequestBody BoxDTO boxDTO) {
+        try {
+            // 从session获取当前用户
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                return Result.error(Result.ResultCode.UNAUTHORIZED);
+            }
+
+            // 设置发送者ID为当前登录用户
+            boxDTO.setSenderId(user.getUserId());
+
+            Box box = boxServiceImpl.sendBox(boxDTO);
+            if (box != null) {
+                return Result.success(box);
+            }
+            return Result.error(Result.ResultCode.INTERNAL_ERROR);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(Result.ResultCode.INTERNAL_ERROR);
         }
-        
-        // 设置发送者ID为当前登录用户
-        boxDTO.setSenderId(user.getUserId());
-        
-        Box box = boxServiceImpl.sendBox(boxDTO);
-        if (box != null) {
-            return Result.success(box);
-        }
-        return Result.error(Result.ResultCode.INTERNAL_ERROR);
     }
 
     // 获取盒子信息

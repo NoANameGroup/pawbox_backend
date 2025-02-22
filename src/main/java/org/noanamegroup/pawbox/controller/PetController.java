@@ -59,10 +59,14 @@ public class PetController {
             // 设置宠物主人ID为当前登录用户
             petDTO.setOwnerId(user.getUserId());
             
-            // 自动生成生日
-            petDTO.setBirthday(LocalDateTime.now());
+            // 设置宠物ID等于用户ID
+            petDTO.setPetId(user.getUserId());
+            
             Pet pet = petServiceImpl.adoptPet(petDTO);
             return Result.success(pet);
+        } catch (IllegalArgumentException e) {
+            log.error("Pet adoption failed: {}", e.getMessage());
+            return Result.error(Result.ResultCode.BAD_REQUEST);
         } catch (Exception e) {
             log.error("Pet adoption failed: ", e);
             return Result.error(Result.ResultCode.INTERNAL_ERROR);

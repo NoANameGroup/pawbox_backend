@@ -26,9 +26,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pet {
+    @TableId(value = "petId", type = IdType.INPUT)
     @Id
-    @TableId(value = "petId", type = IdType.AUTO)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "petId")
     private Integer petId;
 
