@@ -66,8 +66,9 @@ public class SecurityConfig {
             )
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                .maximumSessions(1)      // 限制同一账号同时登录数量
-                .expiredUrl("/user/login")  // session过期后跳转
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)  // 允许新登录踢掉旧登录
+                .expiredUrl("/user/login")
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
@@ -76,7 +77,7 @@ public class SecurityConfig {
                 .logoutSuccessHandler((request, response, authentication) -> {
                     response.setStatus(HttpServletResponse.SC_OK);
                 })
-                .deleteCookies("PAWBOX_SESSION")
+                .deleteCookies("JSESSIONID")
             );
             
         return http.build();
@@ -86,11 +87,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
-            "http://localhost:5500",     // 开发环境
-            "http://127.0.0.1:5500",     // 开发环境
-            "http://localhost:8088",     // 开发环境
-            "http://127.0.0.1:8088"      // 开发环境
-            // "https://your-production-domain.com"  // 生产环境
+            "http://localhost:5500",
+            "http://127.0.0.1:5500",
+            "http://localhost:8088",
+            "http://127.0.0.1:8088"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));

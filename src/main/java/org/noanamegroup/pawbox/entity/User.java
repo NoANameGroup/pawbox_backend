@@ -2,6 +2,7 @@ package org.noanamegroup.pawbox.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -39,8 +40,10 @@ import lombok.NoArgsConstructor;
                 @UniqueConstraint(columnNames = "email")
         }
 )
-public class User
+public class User implements Serializable
 {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @TableId(value = "userId", type = IdType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
