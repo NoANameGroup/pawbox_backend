@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.noanamegroup.pawbox.Result;
 import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.User;
 import org.noanamegroup.pawbox.entity.dto.BoxDTO;
 import org.noanamegroup.pawbox.service.BoxServiceImpl;
+import org.noanamegroup.pawbox.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +30,27 @@ public class BoxController {
     BoxServiceImpl boxServiceImpl;
 
     @Autowired
-    HttpSession session;
+    UserServiceImpl userServiceImpl;
+//
+//    @Autowired
+//    SessionUtils sessionUtils;
+
+    @Autowired
+    private HttpServletRequest request;
 
     // 获取随机盒子
     @GetMapping("/random")
-    public String getRandomBox(@RequestParam Integer receiverId) {
+    public String getRandomBox() {
+//        // 获取会话，如果不存在则不创建新的会话
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            // 未登录
+//            return Result.error(Result.ResultCode.UNAUTHORIZED);
+//        }
+//        Integer receiverId = (Integer) session.getAttribute("userId");
+//        // 获取当前用户的 userId
+//        Integer receiverId = sessionUtils.getUserId();
+        Integer receiverId = Integer.valueOf(request.getHeader("session"));
         Box box = boxServiceImpl.getRandomBox(receiverId);
         if (box != null) {
             // 创建简化的返回对象
@@ -46,29 +64,35 @@ public class BoxController {
         return Result.error(Result.ResultCode.NOT_FOUND);
     }
 
-    // 发送盒子
-    @PostMapping("/send")
-    public String sendBox(@RequestBody BoxDTO boxDTO) {
-        try {
-            // 从session获取当前用户
-            User user = (User) session.getAttribute("user");
-            if (user == null) {
-                return Result.error(Result.ResultCode.UNAUTHORIZED);
-            }
-
-            // 设置发送者ID为当前登录用户
-            boxDTO.setSenderId(user.getUserId());
-
-            Box box = boxServiceImpl.sendBox(boxDTO);
-            if (box != null) {
-                return Result.success(box);
-            }
-            return Result.error(Result.ResultCode.INTERNAL_ERROR);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error(Result.ResultCode.INTERNAL_ERROR);
-        }
-    }
+//    // 发送盒子
+//    @PostMapping("/send")
+//    public String sendBox(@RequestBody BoxDTO boxDTO, ) {
+//        try {
+//            // 获取会话，如果不存在则不创建新的会话
+//            HttpSession session = request.getSession(false);
+//            if (session == null) {
+//                // 未登录
+//                return Result.error(Result.ResultCode.UNAUTHORIZED);
+//            }
+//            Integer userId = (Integer) session.getAttribute("userId");
+//            User user = userServiceImpl.getUser(userId);
+//            if (user == null) {
+//                return Result.error(Result.ResultCode.UNAUTHORIZED);
+//            }
+//
+//            // 设置发送者ID为当前登录用户
+//            boxDTO.setSenderId(user.getUserId());
+//
+//            Box box = boxServiceImpl.sendBox(boxDTO);
+//            if (box != null) {
+//                return Result.success(box);
+//            }
+//            return Result.error(Result.ResultCode.INTERNAL_ERROR);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return Result.error(Result.ResultCode.INTERNAL_ERROR);
+//        }
+//    }
 
     // 获取盒子信息
     @GetMapping("/get/{boxId}")
@@ -83,9 +107,19 @@ public class BoxController {
     }
 
     // 获取用户收到的所有盒子
-    @GetMapping("/received/{userId}")
-    public String getReceivedBoxes(@PathVariable Integer userId)
+    @GetMapping("/received")
+    public String getReceivedBoxes()
     {
+//        // 获取会话，如果不存在则不创建新的会话
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            // 未登录
+//            return Result.error(Result.ResultCode.UNAUTHORIZED);
+//        }
+//        Integer userId = (Integer) session.getAttribute("userId");
+//        // 获取当前用户的 userId
+//        Integer userId = sessionUtils.getUserId();
+        Integer userId = Integer.valueOf(request.getHeader("session"));
         List<Box> boxes = boxServiceImpl.getReceivedBoxes(userId);
         if (boxes != null)
         {
@@ -95,9 +129,19 @@ public class BoxController {
     }
 
     // 获取用户发送的所有盒子
-    @GetMapping("/sent/{userId}")
-    public String getSentBoxes(@PathVariable Integer userId)
+    @GetMapping("/sent")
+    public String getSentBoxes()
     {
+//        // 获取会话，如果不存在则不创建新的会话
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            // 未登录
+//            return Result.error(Result.ResultCode.UNAUTHORIZED);
+//        }
+//        Integer userId = (Integer) session.getAttribute("userId");
+//        // 获取当前用户的 userId
+//        Integer userId = sessionUtils.getUserId();
+        Integer userId = Integer.valueOf(request.getHeader("session"));
         List<Box> boxes = boxServiceImpl.getSentBoxes(userId);
         if (boxes != null)
         {

@@ -4,10 +4,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.noanamegroup.pawbox.Result;
+import org.noanamegroup.pawbox.controller.request.BoxSendRequest;
+import org.noanamegroup.pawbox.controller.request.UserUpdateRequest;
+import org.noanamegroup.pawbox.controller.response.UserResponse;
 import org.noanamegroup.pawbox.entity.Box;
 import org.noanamegroup.pawbox.entity.User;
 import org.noanamegroup.pawbox.entity.dto.BoxDTO;
+import org.noanamegroup.pawbox.entity.dto.SessionData;
 import org.noanamegroup.pawbox.entity.dto.UserDTO;
 import org.noanamegroup.pawbox.service.UserServiceImpl;
 import org.slf4j.Logger;
@@ -30,33 +35,55 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/user")
-public class UserController
-{
+public class UserController {
+
+    // 日志
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     UserServiceImpl userServiceImpl;
 
+    @Autowired
+    private HttpServletRequest request;
+
+//    @Autowired
+//    SessionUtils sessionUtils;
+//
+//    @Autowired
+//    RedisUtils redisUtils;
+
     // 登录
     @PostMapping("/login")
-    public String login(@RequestBody Map<String, String> loginInfo, HttpSession session) {
+    public String login(@RequestBody Map<String, String> loginInfo) {
+
         String email = loginInfo.get("email");
         String password = loginInfo.get("password");
         
         User user = userServiceImpl.login(email, password);
         if (user != null) {
-            // 登录成功,将用户信息存入session
-            session.setAttribute("user", user);
-            // 设置认证信息
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                user.getEmail(), 
-                null, 
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
-            
-            return Result.loginSuccess(user);
+//            // 获取会话，如果不存在则创建一个新的会话
+//            HttpSession session = request.getSession(true);
+//            // 登录成功,将用户信息存入session
+//            session.setAttribute("userId", user.getUserId());
+//            // 设置认证信息
+//            Authentication authentication = new UsernamePasswordAuthenticationToken(
+//                user.getEmail(),
+//                null,
+//                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+//            );
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+
+            //生成 sessionId 和 sessionData，分别存入 sessionUtils 和 redisUtils 中，设置过期时间为 86400 秒
+//            String sessionId = sessionUtils.generateSessionId();
+//            SessionData sessionData = new SessionData(user);
+//            sessionUtils.setSessionId(sessionId);
+//            redisUtils.set(String.valueOf(user.getUserId()), sessionId, 86400);
+//            redisUtils.set(sessionId, sessionData, 86400);
+
+            UserResponse userResponse = new UserResponse(user, user.getUserId());
+
+            return Result.loginSuccess(userResponse);
         }
         return Result.loginFail();
     }
@@ -66,7 +93,20 @@ public class UserController
     public String register(@RequestBody UserDTO userDTO) {
         try {
             User user = userServiceImpl.register(userDTO);
-            return Result.success(user);
+//            // 获取会话，如果不存在则创建一个新的会话
+//            HttpSession session = request.getSession(true);
+//            // 注册成功,将用户信息存入session
+//            session.setAttribute("user", user);
+
+            //生成 sessionId 和 sessionData，分别存入 sessionUtils 和 redisUtils 中，设置过期时间为 86400 秒
+//            String sessionId = sessionUtils.generateSessionId();
+//            SessionData sessionData = new SessionData(user);
+//            sessionUtils.setSessionId(sessionId);
+//            redisUtils.set(String.valueOf(user.getUserId()), sessionId, 86400);
+//            redisUtils.set(sessionId, sessionData, 86400);
+
+            UserResponse userResponse = new UserResponse(user, user.getUserId());
+            return Result.success(userResponse);
         } catch (Exception e) {
             log.error("Registration failed: ", e);
             return Result.error(Result.ResultCode.INTERNAL_ERROR);
@@ -90,14 +130,37 @@ public class UserController
 
     // 登出
     @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
+    public String logout() {
+//        // 获取会话，如果不存在则不创建新的会话
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            // 未登录
+//            return Result.error(Result.ResultCode.UNAUTHORIZED);
+//        }
+//        session.invalidate();
+//        sessionUtils.invalidate();
         return Result.success("Logout successful");
     }
 
     // 更新用户信息
     @PostMapping("/update")
-    public String updateUser(@RequestBody UserDTO userDTO) {
+    public String updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
+
+//        // 获取会话，如果不存在则不创建新的会话
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            // 未登录
+//            return Result.error(Result.ResultCode.UNAUTHORIZED);
+//        }
+//        Integer userId = (Integer) session.getAttribute("userId");
+        // 获取当前用户的 userId
+        Integer userId = Integer.valueOf(request.getHeader("session"));
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setUserId(userId);
+        userDTO.setUsername(userUpdateRequest.getUsername());
+        userDTO.setEmail(userUpdateRequest.getEmail());
+        userDTO.setPassword(userUpdateRequest.getPassword());
         User user = userServiceImpl.updateUser(userDTO);
         if (user != null) {
             return Result.success(user);
@@ -119,8 +182,19 @@ public class UserController
 
     // 获取当前登录用户
     @GetMapping("/current")
-    public String getCurrentUser(HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public String getCurrentUser() {
+//        // 获取会话，如果不存在则不创建新的会话
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            // 未登录
+//            return Result.error(Result.ResultCode.UNAUTHORIZED);
+//        }
+//        Integer userId = (Integer) session.getAttribute("userId");
+//        // 获取当前用户的 userId
+//        Integer userId = sessionUtils.getUserId();
+        Integer userId = Integer.valueOf(request.getHeader("session"));
+        User user = userServiceImpl.getUser(userId);
+
         if (user != null) {
             return Result.success(user);
         }
@@ -129,25 +203,37 @@ public class UserController
 
     // 发送盒子
     @PostMapping("/send")
-    public String sendBox(@Validated @RequestBody BoxDTO boxDTO, HttpSession session) {
-        // 从session获取当前用户
-        User user = (User) session.getAttribute("user");
+    public String sendBox(@Validated @RequestBody BoxSendRequest boxSendRequest) {
+//        // 获取会话，如果不存在则不创建新的会话
+//        HttpSession session = request.getSession(false);
+//        if (session == null) {
+//            // 未登录
+//            return Result.error(Result.ResultCode.UNAUTHORIZED);
+//        }
+//        Integer userId = (Integer) session.getAttribute("userId");
+//        // 获取当前用户的 userId
+//        Integer userId = sessionUtils.getUserId();
+        Integer userId = Integer.valueOf(request.getHeader("session"));
+        User user = userServiceImpl.getUser(userId);
         if (user == null) {
             return Result.error(Result.ResultCode.UNAUTHORIZED);
         }
-        
-        // 设置发送者ID为当前登录用户
+
+        BoxDTO boxDTO = new BoxDTO();
         boxDTO.setSenderId(user.getUserId());
+        boxDTO.setContent(boxSendRequest.getContent());
+        boxDTO.setImageUrl(boxSendRequest.getImageUrl());
+
         
         Box box = userServiceImpl.sendBox(boxDTO, user.getUserId());
         return Result.success(box);
     }
 
     // 接受盒子
-    @PostMapping("/receive/{userId}/{boxId}")
-    public String receiveBox(@PathVariable Integer boxId, @RequestParam Integer receiverId)
+    @PostMapping("/receive")
+    public String receiveBox(@RequestParam Integer userId, @RequestParam Integer boxId)
     {
-        Box box = userServiceImpl.receiveBox(boxId, receiverId);
+        Box box = userServiceImpl.receiveBox(boxId, userId);
         if (box != null)
         {
             return Result.success(box);
