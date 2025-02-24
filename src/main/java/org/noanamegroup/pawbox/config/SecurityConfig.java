@@ -18,14 +18,14 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
     private final UserServiceImpl userService;
-    
+
     @Autowired
     public SecurityConfig(UserServiceImpl userService) {
         this.userService = userService;
     }
-    
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
@@ -43,7 +43,7 @@ public class SecurityConfig {
             }
         };
     }
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -57,7 +57,7 @@ public class SecurityConfig {
             )
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());
-            
+
         return http.build();
     }
-} 
+}

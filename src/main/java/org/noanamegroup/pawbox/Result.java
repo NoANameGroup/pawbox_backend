@@ -3,6 +3,7 @@ package org.noanamegroup.pawbox;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.noanamegroup.pawbox.controller.response.UserResponse;
 import org.noanamegroup.pawbox.entity.User;
 
 import com.alibaba.fastjson2.JSONObject;
@@ -13,7 +14,7 @@ public class Result
 {
     @Getter
     public enum ResultCode {
-        SUCCESS(200, "操作成功"),
+        SUCCESS(0, "操作成功"),
         NOT_FOUND(404, "资源未找到"),
         UNAUTHORIZED(401, "未授权"),
         FORBIDDEN(403, "禁止访问"),
@@ -47,10 +48,10 @@ public class Result
         return JSONObject.toJSONString(map);
     }
 
-    public static String loginSuccess(User user)
+    public static String loginSuccess(UserResponse user)
     {
         Map<String, Object> map = new HashMap<>();
-        map.put("code", 200);
+        map.put("code", 0);
         map.put("message", "login successfully");
         map.put("data", user);
         return JSONObject.toJSONString(map);
