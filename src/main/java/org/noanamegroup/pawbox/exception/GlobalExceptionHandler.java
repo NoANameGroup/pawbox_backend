@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.alibaba.fastjson2.JSONObject;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,6 +41,26 @@ public class GlobalExceptionHandler {
         Map<String, Object> map = new HashMap<>();
         map.put("code", 400);
         map.put("message", "参数错误: " + e.getMessage());
+        map.put("data", null);
+        return JSONObject.toJSONString(map);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public String handleAccessDeniedException(AccessDeniedException e) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 403);
+        map.put("message", "访问被拒绝");
+        map.put("data", null);
+        return JSONObject.toJSONString(map);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleAuthenticationException(AuthenticationException e) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 401);
+        map.put("message", "认证失败");
         map.put("data", null);
         return JSONObject.toJSONString(map);
     }
